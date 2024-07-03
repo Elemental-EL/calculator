@@ -62,7 +62,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: Text(
-                          "$number1$operand$number2".isEmpty?"0":"$number1$operand$number2",
+                          "$number1$operand$number2".isEmpty?"0":
+                          "$number1$operand$number2",
                           style: const TextStyle(
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
@@ -244,8 +245,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       if (operand.isNotEmpty&&number2.isNotEmpty){
         calculate();
       }
+      if (number1.endsWith(".")&&number2.isEmpty){
+        number1+="0";
+      }
       if (number1.isEmpty&&value==Btn.subtract) {
-        number1 = value;
+        number1 = "-0";
       }else if(number1.isNotEmpty&&(operand==Btn.multiply||operand==Btn.divide)&&number2.isEmpty&&value==Btn.subtract){
           number2 = value;
       }
@@ -263,10 +267,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         number1 = "0.";
         lastPressedWasCalc = false;
       } else if (lastPressedWasCalc){
-        number1 = value;
+        if(value=="0"){
+          number1="";
+        } else {
+          number1 = value;
+        }
         lastPressedWasCalc = false;
       } else {
-        number1 += value;
+        if (number1=="-0"&&value!=Btn.dot){
+          number1= "-$value";
+        } else if (number1=="-0"&&value==Btn.dot) {
+          number1= "-0$value";
+        } else {
+          number1+=value;
+        }
       }
     } else if(number2.isEmpty || operand.isNotEmpty){
       if (value==Btn.dot&&number2.contains(Btn.dot)) return;
